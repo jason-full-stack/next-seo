@@ -2,18 +2,21 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
+import formatAuthorName from '../utils/formatAuthorName';
 
 export interface BlogJsonLdProps {
+  keyOverride?: string;
   url: string;
   title: string;
   images: ReadonlyArray<string>;
   datePublished: string;
   dateModified: string;
-  authorName: string;
+  authorName: string | string[];
   description: string;
 }
 
 const BlogJsonLd: FC<BlogJsonLdProps> = ({
+  keyOverride,
   url,
   title,
   images = [],
@@ -23,7 +26,7 @@ const BlogJsonLd: FC<BlogJsonLdProps> = ({
   description,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Blog",
     "mainEntityOfPage": {
       "@type": "WebPage",
@@ -35,10 +38,7 @@ const BlogJsonLd: FC<BlogJsonLdProps> = ({
      ],
     "datePublished": "${datePublished}",
     "dateModified": "${dateModified || datePublished}",
-    "author": {
-      "@type": "Person",
-      "name": "${authorName}"
-    },
+    "author": ${formatAuthorName(authorName)},
     "description": "${description}"
   }`;
 
@@ -47,7 +47,7 @@ const BlogJsonLd: FC<BlogJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-blog"
+        key={`jsonld-blog${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

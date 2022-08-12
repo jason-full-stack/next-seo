@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
-
 export interface ContactPoint {
   contactType: string;
   telephone: string;
@@ -11,6 +10,7 @@ export interface ContactPoint {
   contactOption?: string | string[];
 }
 export interface CorporateContactJsonLdProps {
+  keyOverride?: string;
   url: string;
   contactPoint: ContactPoint[];
   logo?: string;
@@ -44,6 +44,7 @@ const buildContactPoint = (contactPoint: ContactPoint[]) =>
   );
 
 const CorporateContactJsonLd: FC<CorporateContactJsonLdProps> = ({
+  keyOverride,
   url,
   logo,
   contactPoint,
@@ -61,7 +62,7 @@ const CorporateContactJsonLd: FC<CorporateContactJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-corporate-contact"
+        key={`jsonld-corporate-contact${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

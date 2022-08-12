@@ -2,8 +2,10 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
+import formatAuthorName from '../utils/formatAuthorName';
 
 export interface NewsArticleJsonLdProps {
+  keyOverride?: string;
   url: string;
   title: string;
   images: ReadonlyArray<string>;
@@ -12,7 +14,7 @@ export interface NewsArticleJsonLdProps {
   dateCreated: string;
   datePublished: string;
   dateModified?: string;
-  authorName: string;
+  authorName: string | string[];
   description: string;
   body: string;
   publisherName: string;
@@ -20,6 +22,7 @@ export interface NewsArticleJsonLdProps {
 }
 
 const NewsArticleJsonLd: FC<NewsArticleJsonLdProps> = ({
+  keyOverride,
   url,
   title,
   images = [],
@@ -35,7 +38,7 @@ const NewsArticleJsonLd: FC<NewsArticleJsonLdProps> = ({
   publisherLogo,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "NewsArticle",
     "mainEntityOfPage": {
       "@type": "WebPage",
@@ -46,14 +49,11 @@ const NewsArticleJsonLd: FC<NewsArticleJsonLdProps> = ({
       ${images.map(image => `"${image}"`)}
      ],
     "articleSection":"${section}",
-    "keywords": "${keywords}",    
+    "keywords": "${keywords}",
     "datePublished": "${datePublished}",
     "dateCreated": "${dateCreated || datePublished}",
     "dateModified": "${dateModified || datePublished}",
-    "author": {
-      "@type": "Person",
-      "name": "${authorName}"
-    },
+    "author": ${formatAuthorName(authorName)},
     "publisher": {
       "@type": "Organization",
       "name": "${publisherName}",
@@ -71,7 +71,7 @@ const NewsArticleJsonLd: FC<NewsArticleJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-newsarticle"
+        key={`jsonld-newsarticle${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

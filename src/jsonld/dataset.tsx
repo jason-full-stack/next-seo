@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
-
 export interface DatasetJsonLdProps {
   description: string;
   name: string;
@@ -15,7 +14,7 @@ const DatasetJsonLd: FC<DatasetJsonLdProps> = ({
   license,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Dataset",
     "description": "${description}",
     "name": "${name}"${

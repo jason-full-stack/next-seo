@@ -2,20 +2,23 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
+import formatAuthorName from '../utils/formatAuthorName';
 
 export interface ArticleJsonLdProps {
+  keyOverride?: string;
   url: string;
   title: string;
   images: ReadonlyArray<string>;
   datePublished: string;
   dateModified?: string;
-  authorName: string;
+  authorName: string | string[];
   description: string;
   publisherName: string;
   publisherLogo: string;
 }
 
 const ArticleJsonLd: FC<ArticleJsonLdProps> = ({
+  keyOverride,
   url,
   title,
   images = [],
@@ -27,7 +30,7 @@ const ArticleJsonLd: FC<ArticleJsonLdProps> = ({
   publisherLogo,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Article",
     "mainEntityOfPage": {
       "@type": "WebPage",
@@ -39,10 +42,7 @@ const ArticleJsonLd: FC<ArticleJsonLdProps> = ({
      ],
     "datePublished": "${datePublished}",
     "dateModified": "${dateModified || datePublished}",
-    "author": {
-      "@type": "Person",
-      "name": "${authorName}"
-    },
+    "author": ${formatAuthorName(authorName)},
     "publisher": {
       "@type": "Organization",
       "name": "${publisherName}",
@@ -59,7 +59,7 @@ const ArticleJsonLd: FC<ArticleJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-article"
+        key={`jsonld-article${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
-
 export interface HiringOrganization {
   name: string;
   sameAs: string;
+  logo?: string;
 }
 
 export interface Place {
@@ -38,12 +38,12 @@ export interface JobPostingJsonLdProps {
   datePosted: string;
   description: string;
   hiringOrganization: HiringOrganization;
-  jobLocation: Place;
   title: string;
   validThrough: string;
   applicantLocationRequirements?: string;
   baseSalary?: MonetaryAmount;
   employmentType?: EmploymentType | EmploymentType[];
+  jobLocation?: Place;
   jobLocationType?: string;
 }
 
@@ -72,7 +72,7 @@ const JobPostingJsonLd: FC<JobPostingJsonLdProps> = ({
   validThrough,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "JobPosting",
     ${baseSalary ? buildBaseSalary(baseSalary) : ''}
     "datePosted": "${datePosted}",
@@ -82,9 +82,11 @@ const JobPostingJsonLd: FC<JobPostingJsonLdProps> = ({
       "@type" : "Organization",
       "name" : "${hiringOrganization.name}",
       "sameAs" : "${hiringOrganization.sameAs}"
+      ${hiringOrganization.logo ? `,"logo": "${hiringOrganization.logo}"` : ''}
     },
-    
-    "jobLocation": {
+    ${
+      jobLocation
+        ? `"jobLocation": {
       "@type": "Place",
       "address": {
         "@type": "PostalAddress",
@@ -93,8 +95,10 @@ const JobPostingJsonLd: FC<JobPostingJsonLdProps> = ({
         "postalCode" : "${jobLocation.postalCode}",
         "streetAddress" : "${jobLocation.streetAddress}",
         "addressCountry" : "${jobLocation.addressCountry}"
-      }
-    },
+          }
+      },`
+        : ''
+    }
     ${
       applicantLocationRequirements
         ? ` "applicantLocationRequirements": {

@@ -14,7 +14,10 @@ import {
   JobPostingJsonLd,
   EventJsonLd,
   DatasetJsonLd,
-} from '../../lib';
+  RecipeJsonLd,
+  SiteLinksSearchBoxJsonLd,
+  QAPageJsonld
+} from '../..';
 import Links from '../components/links';
 
 export default () => (
@@ -30,7 +33,7 @@ export default () => (
       ]}
       datePublished="2015-02-05T08:00:00+08:00"
       dateModified="2015-02-05T09:00:00+08:00"
-      authorName="Jane Blogs"
+      authorName={['Jane Blogs', 'Mary Stone']}
       publisherName="Gary Meehan"
       publisherLogo="https://www.example.com/photos/logo.jpg"
       description="This is a mighty good description of this article."
@@ -133,7 +136,13 @@ export default () => (
 
     <LogoJsonLd
       logo="http://www.your-site.com/images/logo.jpg"
-      url="http://www.your-site.com"
+      url="http://www.and-this-one.com"
+    />
+
+    <LogoJsonLd
+      logo="http://www.your-site.com/images/logo.jpg"
+      url="http://www.check-override-of-key.com"
+      keyOverride="check-override-of-key"
     />
 
     <ProductJsonLd
@@ -175,8 +184,8 @@ export default () => (
           price: '119.99',
           priceCurrency: 'USD',
           priceValidUntil: '2020-11-05',
-          itemCondition: 'http://schema.org/UsedCondition',
-          availability: 'http://schema.org/InStock',
+          itemCondition: 'https://schema.org/UsedCondition',
+          availability: 'https://schema.org/InStock',
           url: 'https://www.example.com/executive-anvil',
           seller: {
             name: 'Executive Objects',
@@ -186,14 +195,20 @@ export default () => (
           price: '139.99',
           priceCurrency: 'CAD',
           priceValidUntil: '2020-09-05',
-          itemCondition: 'http://schema.org/UsedCondition',
-          availability: 'http://schema.org/InStock',
+          itemCondition: 'https://schema.org/UsedCondition',
+          availability: 'https://schema.org/InStock',
           url: 'https://www.example.ca/executive-anvil',
           seller: {
             name: 'Executive Objects',
           },
         },
       ]}
+      aggregateOffer={{
+        priceCurrency: 'USD',
+        lowPrice: '119.99',
+        highPrice: '139.99',
+        offerCount: '5',
+      }}
       mpn="925872"
     />
 
@@ -272,7 +287,8 @@ export default () => (
       description="Company is looking for a software developer...."
       hiringOrganization={{
         name: 'company name',
-        sameAs: 'www.company-website-url.dev',
+        sameAs: 'http://www.company-website-url.dev',
+        logo: 'http://www.company-website-url.dev/images/logo.png',
       }}
       jobLocation={{
         streetAddress: '17 street address',
@@ -319,6 +335,119 @@ export default () => (
       license="https//www.example.com"
     />
 
+    <RecipeJsonLd
+      name="Party Coffee Cake"
+      description="This coffee cake is awesome and perfect for parties."
+      datePublished="2018-03-10"
+      authorName={['Jane Blogs', 'Mary Stone']}
+      prepTime="PT20M"
+      cookTime="PT30M"
+      totalTime="PT50M"
+      keywords="cake for a party, coffee"
+      yields="10"
+      category="Dessert"
+      cuisine="American"
+      calories={270}
+      images={[
+        'https://example.com/photos/1x1/photo.jpg',
+        'https://example.com/photos/4x3/photo.jpg',
+        'https://example.com/photos/16x9/photo.jpg',
+      ]}
+      ingredients={[
+        '2 cups of flour',
+        '3/4 cup white sugar',
+        '2 teaspoons baking powder',
+        '1/2 teaspoon salt',
+        '1/2 cup butter',
+        '2 eggs',
+        '3/4 cup milk',
+      ]}
+      instructions={[
+        {
+          name: 'Preheat',
+          text:
+            'Preheat the oven to 350 degrees F. Grease and flour a 9x9 inch pan.',
+          url: 'https://example.com/party-coffee-cake#step1',
+          image: 'https://example.com/photos/party-coffee-cake/step1.jpg',
+        },
+      ]}
+      aggregateRating={{
+        ratingValue: '5',
+        ratingCount: '18',
+      }}
+      video={{
+        name: 'How to make a Party Coffee Cake',
+        description: 'This is how you make a Party Coffee Cake.',
+        contentUrl: 'http://www.example.com/video123.mp4',
+        embedUrl: 'http://www.example.com/videoplayer?video=123',
+        uploadDate: '2018-02-05T08:00:00+08:00',
+        duration: 'PT1M33S',
+        thumbnailUrls: [
+          'https://example.com/photos/1x1/photo.jpg',
+          'https://example.com/photos/4x3/photo.jpg',
+          'https://example.com/photos/16x9/photo.jpg',
+        ],
+        expires: '2019-02-05T08:00:00+08:00',
+        watchCount: 2347,
+      }}
+    />
+
+    <SiteLinksSearchBoxJsonLd
+      url="https://example.com"
+      potentialActions={[
+        {
+          target: 'https://query.example.com/search?q',
+          queryInput: 'search_term_string',
+        },
+        {
+          target: 'android-app://com.example/https/query.example.com/search/?q',
+          queryInput: 'search_term_string',
+        },
+      ]}
+    />
+
+    <QAPageJsonld
+      mainEntity={{
+        name: 'How many ounces are there in a pound?',
+        text:
+          'I have taken up a new interest in baking and keep running across directions in ounces and pounds. I have to translate between them and was wondering how many ounces are in a pound?',
+        answerCount: 3,
+        upvotedCount: 26,
+        dateCreated: '2016-07-23T21:11Z',
+        author: { name: 'New Baking User' },
+        acceptedAnswer: {
+          text: '1 pound (lb) is equal to 16 ounces (oz).',
+          dateCreated: '2016-11-02T21:11Z',
+          upvotedCount: 1337,
+          url: 'https://example.com/question1#acceptedAnswer',
+          author: {
+            name: 'SomeUser',
+          },
+        },
+        suggestedAnswer: [
+          {
+            text:
+              'Are you looking for ounces or fluid ounces? If you are looking for fluid ounces there are 15.34 fluid ounces in a pound of water.',
+            dateCreated: '2016-11-02T21:11Z',
+            upvotedCount: 42,
+            url: 'https://example.com/question1#suggestedAnswer1',
+            author: {
+              name: 'AnotherUser',
+            },
+          },
+          {
+            text: `I can't remember exactly, but I think 18 ounces in a lb. You might want to double check that.`,
+            dateCreated: '2016-11-06T21:11Z',
+            upvotedCount: 0,
+            url: 'https://example.com/question1#suggestedAnswer2',
+            author: {
+              name: 'ConfusedUser',
+            },
+          },
+        ],
+      }}
+    />
+    
     <Links />
   </>
 );

@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
-
 export interface SocialProfileJsonLdProps {
+  keyOverride?: string;
   type: string;
   name: string;
   url: string;
@@ -11,13 +11,14 @@ export interface SocialProfileJsonLdProps {
 }
 
 const SocialProfileJsonLd: FC<SocialProfileJsonLdProps> = ({
+  keyOverride,
   type,
   name,
   url,
   sameAs = [],
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "${type}",
     "name": "${name}",
     "url": "${url}",
@@ -31,7 +32,7 @@ const SocialProfileJsonLd: FC<SocialProfileJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-social"
+        key={`jsonld-social${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

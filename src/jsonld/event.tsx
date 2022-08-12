@@ -3,8 +3,8 @@ import Head from 'next/head';
 
 import markup from '../utils/markup';
 import formatIfArray from '../utils/formatIfArray';
-import { Address } from '../types';
 import buildAddress from '../utils/buildAddress';
+import { Address } from '../types';
 
 type Location = {
   name: string;
@@ -41,7 +41,7 @@ const EventJsonLd: FC<EventJsonLdProps> = ({
   images,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Event",
     "startDate": "${startDate}",
     "endDate": "${endDate}",

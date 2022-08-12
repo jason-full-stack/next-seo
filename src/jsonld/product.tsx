@@ -3,7 +3,6 @@ import Head from 'next/head';
 
 import markup from '../utils/markup';
 import formatIfArray from '../utils/formatIfArray';
-
 type ReviewRating = {
   bestRating?: string;
   ratingValue: string;
@@ -20,7 +19,7 @@ type Publisher = {
   name: string;
 };
 
-type Review = {
+export type Review = {
   author: Author;
   datePublished?: string;
   reviewBody?: string;
@@ -41,19 +40,28 @@ type Offers = {
   };
 };
 
-type AggregateRating = {
+type AggregateOffer = {
+  priceCurrency: string;
+  lowPrice: string;
+  highPrice?: string;
+  offerCount?: string;
+};
+
+export type AggregateRating = {
   ratingValue: string;
   reviewCount: string;
 };
 
 export interface ProductJsonLdProps {
+  keyOverride?: string;
   productName: string;
   images?: string[];
   description?: string;
   brand?: string;
   reviews?: Review[];
   aggregateRating?: AggregateRating;
-  offers: Offers | Offers[];
+  offers?: Offers | Offers[];
+  aggregateOffer?: AggregateOffer;
   sku?: string;
   gtin8?: string;
   gtin13?: string;
@@ -68,7 +76,7 @@ const buildBrand = (brand: string) => `
     },
 `;
 
-const buildReviewRating = (rating: ReviewRating) =>
+export const buildReviewRating = (rating: ReviewRating) =>
   rating
     ? `"reviewRating": {
           "@type": "Rating",
@@ -78,14 +86,14 @@ const buildReviewRating = (rating: ReviewRating) =>
         }`
     : '';
 
-const buildAuthor = (author: Author) => `
+export const buildAuthor = (author: Author) => `
   "author": {
       "@type": "${author.type}",
       "name": "${author.name}"
   },
 `;
 
-const buildPublisher = (publisher: Publisher) => `
+export const buildPublisher = (publisher: Publisher) => `
   "publisher": {
       "@type": "${publisher.type}",
       "name": "${publisher.name}"
@@ -146,7 +154,18 @@ const buildOffers = (offers: Offers) => `
   }
 `;
 
+const buildAggregateOffer = (offer: AggregateOffer) => `
+  {
+    "@type": "AggregateOffer",
+    "priceCurrency": "${offer.priceCurrency}",
+    ${offer.highPrice ? `"highPrice": "${offer.highPrice}",` : ''}
+    ${offer.offerCount ? `"offerCount": "${offer.offerCount}",` : ''}
+    "lowPrice": "${offer.lowPrice}"
+  }
+`;
+
 const ProductJsonLd: FC<ProductJsonLdProps> = ({
+  keyOverride,
   productName,
   images = [],
   description,
@@ -159,9 +178,10 @@ const ProductJsonLd: FC<ProductJsonLdProps> = ({
   reviews = [],
   aggregateRating,
   offers,
+  aggregateOffer,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org/",
+    "@context": "https://schema.org/",
     "@type": "Product",
     "image":${formatIfArray(images)},
     ${description ? `"description": "${description}",` : ''}
@@ -182,6 +202,11 @@ const ProductJsonLd: FC<ProductJsonLdProps> = ({
           },`
         : ''
     }
+    ${
+      aggregateOffer && !offers
+        ? `"offers": ${buildAggregateOffer(aggregateOffer)},`
+        : ''
+    }
     "name": "${productName}"
   }`;
 
@@ -190,7 +215,7 @@ const ProductJsonLd: FC<ProductJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-product"
+        key={`jsonld-product${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

@@ -42,6 +42,10 @@ export const aggregateRating100 = {
         type: 'string',
         description: 'The rating for the content.',
       },
+      ratingCount: {
+        type: 'string',
+        description: 'The count of total number of ratings.',
+      },
       reviewCount: {
         type: 'string',
         description: 'The count of total number of reviews.',
@@ -134,8 +138,8 @@ export const offers100 = {
       priceCurrency: 'USD',
       price: '119.99',
       priceValidUntil: '2020-11-05',
-      itemCondition: 'http://schema.org/UsedCondition',
-      availability: 'http://schema.org/InStock',
+      itemCondition: 'https://schema.org/UsedCondition',
+      availability: 'https://schema.org/InStock',
       seller: {
         '@type': 'Organization',
         name: 'Executive Objects',
@@ -199,8 +203,8 @@ export const offers101 = {
       priceCurrency: 'USD',
       price: '119.99',
       priceValidUntil: '2020-11-05',
-      itemCondition: 'http://schema.org/UsedCondition',
-      availability: 'http://schema.org/InStock',
+      itemCondition: 'https://schema.org/UsedCondition',
+      availability: 'https://schema.org/InStock',
       seller: {
         '@type': 'Organization',
         name: 'Executive Objects',
@@ -252,7 +256,7 @@ export const author100 = {
     patch: 0,
   },
   schema: {
-    type: 'object',
+    type: ['object', 'array'],
     description: 'Author',
     properties: {
       '@type': {

@@ -3,8 +3,8 @@ import Head from 'next/head';
 
 import markup from '../utils/markup';
 import formatIfArray from '../utils/formatIfArray';
-import { Address } from '../types';
 import buildAddress from '../utils/buildAddress';
+import { Address } from '../types';
 
 type Geo = {
   latitude: string;
@@ -25,6 +25,7 @@ type OpeningHoursSpecification = {
 };
 
 export interface LocalBusinessJsonLdProps {
+  keyOverride?: string;
   type: string;
   id: string;
   name: string;
@@ -33,9 +34,10 @@ export interface LocalBusinessJsonLdProps {
   telephone?: string;
   address: Address;
   geo?: Geo;
-  images: string[];
+  images?: string[];
   rating?: Rating;
   priceRange?: string;
+  servesCuisine?: string | string[];
   sameAs?: string[];
   openingHours?: OpeningHoursSpecification | OpeningHoursSpecification[];
 }
@@ -59,23 +61,24 @@ const buildRating = (rating: Rating) => `
 const buildOpeningHours = (openingHours: OpeningHoursSpecification) => `
   {
     "@type": "OpeningHoursSpecification",
-    "opens": "${openingHours.opens}",
-    "closes": "${openingHours.closes}",
     ${
       openingHours.dayOfWeek
         ? `"dayOfWeek": ${formatIfArray(openingHours.dayOfWeek)},`
         : ''
     }
+    "opens": "${openingHours.opens}",
     ${openingHours.validFrom ? `"validFrom": "${openingHours.validFrom}",` : ''}
     ${
       openingHours.validThrough
-        ? `"validThrough": "${openingHours.validThrough}"`
+        ? `"validThrough": "${openingHours.validThrough}",`
         : ''
     }
+    "closes": "${openingHours.closes}"
   }
 `;
 
 const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
+  keyOverride,
   type,
   id,
   name,
@@ -87,13 +90,14 @@ const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
   images,
   rating,
   priceRange,
+  servesCuisine,
   sameAs,
   openingHours,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "${type}",
-    "@id": "${id}",
+    ${id ? `"@id": "${id}",` : ''}
     ${description ? `"description": "${description}",` : ''}
     ${url ? `"url": "${url}",` : ''}
     ${telephone ? `"telephone": "${telephone}",` : ''}
@@ -101,7 +105,8 @@ const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
     ${geo ? `${buildGeo(geo)}` : ''}
     ${rating ? `${buildRating(rating)}` : ''}
     ${priceRange ? `"priceRange": "${priceRange}",` : ''}
-    "image":${formatIfArray(images)},
+    ${servesCuisine ? `"servesCuisine":${formatIfArray(servesCuisine)},` : ''}
+    ${images ? `"image":${formatIfArray(images)},` : ''}
     ${sameAs ? `"sameAs": [${sameAs.map(url => `"${url}"`)}],` : ''}
     ${
       openingHours
@@ -120,7 +125,7 @@ const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-local-business"
+        key={`jsonld-local-business${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

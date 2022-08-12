@@ -2,21 +2,22 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
-
 export interface ItemListElements {
   item: string;
   name: string;
   position: number;
 }
 export interface BreadCrumbJsonLdProps {
+  keyOverride?: string;
   itemListElements: ItemListElements[];
 }
 
 const BreadCrumbJsonLd: FC<BreadCrumbJsonLdProps> = ({
+  keyOverride,
   itemListElements = [],
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       ${itemListElements.map(
@@ -37,7 +38,7 @@ const BreadCrumbJsonLd: FC<BreadCrumbJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-breadcrumb"
+        key={`jsonld-breadcrumb${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

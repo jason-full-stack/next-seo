@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import Head from 'next/head';
 
 import markup from '../utils/markup';
-
 export interface CourseJsonLdProps {
+  keyOverride?: string;
   courseName: string;
   description: string;
   providerName: string;
@@ -11,13 +11,14 @@ export interface CourseJsonLdProps {
 }
 
 const CourseJsonLd: FC<CourseJsonLdProps> = ({
+  keyOverride,
   courseName,
   description,
   providerName,
   providerUrl,
 }) => {
   const jslonld = `{
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Course",
     "name": "${courseName}",
     "description": "${description}",
@@ -37,7 +38,7 @@ const CourseJsonLd: FC<CourseJsonLdProps> = ({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-course"
+        key={`jsonld-course${keyOverride ? `-${keyOverride}` : ''}`}
       />
     </Head>
   );

@@ -1,7 +1,7 @@
 import { assertSchema } from '@cypress/schema-tools';
 import schemas from '../schemas';
 
-const expectedJSONResults = 14;
+const expectedJSONResults = 18;
 
 const articleLdJsonIndex = 0;
 const breadcrumbLdJsonIndex = 1;
@@ -9,14 +9,18 @@ const blogLdJsonIndex = 2;
 const courseLdJsonIndex = 3;
 const localBusinessLdJsonIndex = 4;
 const logoLdJsonIndex = 5;
-const productLdJsonIndex = 6;
-const socialProfileLdJsonIndex = 7;
-const corporateContactIndex = 8;
-const newsarticleLdJsonIndex = 9;
-const faqPageLdJsonIndex = 10;
-const jobPostingLdJsonIndex = 11;
-const eventLdJsonIndex = 12;
-const datasetLdJsonIndex = 13;
+const logoLdSecondJsonIndex = 6;
+const productLdJsonIndex = 7;
+const socialProfileLdJsonIndex = 8;
+const corporateContactIndex = 9;
+const newsarticleLdJsonIndex = 10;
+const faqPageLdJsonIndex = 11;
+const jobPostingLdJsonIndex = 12;
+const eventLdJsonIndex = 13;
+const datasetLdJsonIndex = 14;
+const recipeLdJsonIndex = 15;
+const siteLinksSearchBoxLdJsonIndex = 16;
+const qaPageLdJsonIndex = 17;
 
 describe('Validates JSON-LD For:', () => {
   it('Article', () => {
@@ -36,7 +40,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[articleLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Article',
           mainEntityOfPage: {
             '@type': 'WebPage',
@@ -50,10 +54,16 @@ describe('Validates JSON-LD For:', () => {
           ],
           datePublished: '2015-02-05T08:00:00+08:00',
           dateModified: '2015-02-05T09:00:00+08:00',
-          author: {
-            '@type': 'Person',
-            name: 'Jane Blogs',
-          },
+          author: [
+            {
+              '@type': 'Person',
+              name: 'Jane Blogs',
+            },
+            {
+              '@type': 'Person',
+              name: 'Mary Stone',
+            },
+          ],
           publisher: {
             '@type': 'Organization',
             name: 'Gary Meehan',
@@ -84,7 +94,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[breadcrumbLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
             {
@@ -142,7 +152,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[blogLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Blog',
           mainEntityOfPage: {
             '@type': 'WebPage',
@@ -182,7 +192,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[courseLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Course',
           name: 'Course Name',
           description: 'Course description goes right here',
@@ -212,7 +222,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[localBusinessLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Store',
           '@id': 'http://davesdeptstore.example.com',
           name: "Dave's Department Store",
@@ -278,18 +288,13 @@ describe('Validates JSON-LD For:', () => {
       });
   });
 
-  it('Logo Matches', () => {
+  it('Second Logo', () => {
     cy.visit('http://localhost:3000/jsonld');
     cy.get('head script[type="application/ld+json"]')
       .should('have.length', expectedJSONResults)
       .then(tags => {
-        const jsonLD = JSON.parse(tags[logoLdJsonIndex].innerHTML);
-        expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
-          '@type': 'Organization',
-          url: 'http://www.your-site.com',
-          logo: 'http://www.your-site.com/images/logo.jpg',
-        });
+        const jsonLD = JSON.parse(tags[logoLdSecondJsonIndex].innerHTML);
+        assertSchema(schemas)('Logo', '1.0.0')(jsonLD);
       });
   });
 
@@ -310,7 +315,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[productLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org/',
+          '@context': 'https://schema.org/',
           '@type': 'Product',
           name: 'Executive Anvil',
           image: [
@@ -359,8 +364,8 @@ describe('Validates JSON-LD For:', () => {
               price: '119.99',
               priceCurrency: 'USD',
               priceValidUntil: '2020-11-05',
-              itemCondition: 'http://schema.org/UsedCondition',
-              availability: 'http://schema.org/InStock',
+              itemCondition: 'https://schema.org/UsedCondition',
+              availability: 'https://schema.org/InStock',
               url: 'https://www.example.com/executive-anvil',
               seller: {
                 '@type': 'Organization',
@@ -372,8 +377,8 @@ describe('Validates JSON-LD For:', () => {
               price: '139.99',
               priceCurrency: 'CAD',
               priceValidUntil: '2020-09-05',
-              itemCondition: 'http://schema.org/UsedCondition',
-              availability: 'http://schema.org/InStock',
+              itemCondition: 'https://schema.org/UsedCondition',
+              availability: 'https://schema.org/InStock',
               url: 'https://www.example.ca/executive-anvil',
               seller: {
                 '@type': 'Organization',
@@ -402,7 +407,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[socialProfileLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Person',
           name: 'your name',
           url: 'http://www.your-site.com',
@@ -482,7 +487,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[newsarticleLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'NewsArticle',
           mainEntityOfPage: {
             '@type': 'WebPage',
@@ -535,7 +540,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[faqPageLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org/',
+          '@context': 'https://schema.org/',
           '@type': 'FAQPage',
           mainEntity: [
             {
@@ -576,7 +581,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[jobPostingLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'JobPosting',
 
           baseSalary: {
@@ -595,7 +600,8 @@ describe('Validates JSON-LD For:', () => {
           hiringOrganization: {
             '@type': 'Organization',
             name: 'company name',
-            sameAs: 'www.company-website-url.dev',
+            sameAs: 'http://www.company-website-url.dev',
+            logo: 'http://www.company-website-url.dev/images/logo.png',
           },
 
           jobLocation: {
@@ -637,7 +643,7 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[eventLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Event',
           name: 'My Event',
           startDate: '2020-01-23T00:00:00.000Z',
@@ -679,13 +685,564 @@ describe('Validates JSON-LD For:', () => {
       .then(tags => {
         const jsonLD = JSON.parse(tags[datasetLdJsonIndex].innerHTML);
         expect(jsonLD).to.deep.equal({
-          '@context': 'http://schema.org',
+          '@context': 'https://schema.org',
           '@type': 'Dataset',
           description:
             'The description needs to be at least 50 characters long',
           name: 'name of the dataset',
           license: 'https//www.example.com',
         });
+      });
+  });
+
+  it('Recipe', () => {
+    cy.visit('http://localhost:3000/jsonld');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', expectedJSONResults)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[recipeLdJsonIndex].innerHTML);
+        assertSchema(schemas)('Recipe', '1.0.0')(jsonLD);
+      });
+  });
+
+  it('Recipe Matches', () => {
+    cy.visit('http://localhost:3000/jsonld');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', expectedJSONResults)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[recipeLdJsonIndex].innerHTML);
+        const expectedObject = {
+          '@context': 'https://schema.org/',
+          '@type': 'Recipe',
+          name: 'Party Coffee Cake',
+          image: [
+            'https://example.com/photos/1x1/photo.jpg',
+            'https://example.com/photos/4x3/photo.jpg',
+            'https://example.com/photos/16x9/photo.jpg',
+          ],
+          author: [
+            {
+              '@type': 'Person',
+              name: 'Jane Blogs',
+            },
+            {
+              '@type': 'Person',
+              name: 'Mary Stone',
+            },
+          ],
+          datePublished: '2018-03-10',
+          description: 'This coffee cake is awesome and perfect for parties.',
+          prepTime: 'PT20M',
+          cookTime: 'PT30M',
+          totalTime: 'PT50M',
+          keywords: 'cake for a party, coffee',
+          recipeYield: '10',
+          recipeCategory: 'Dessert',
+          recipeCuisine: 'American',
+          nutrition: {
+            '@type': 'NutritionInformation',
+            calories: '270 calories',
+          },
+          recipeIngredient: [
+            '2 cups of flour',
+            '3/4 cup white sugar',
+            '2 teaspoons baking powder',
+            '1/2 teaspoon salt',
+            '1/2 cup butter',
+            '2 eggs',
+            '3/4 cup milk',
+          ],
+          recipeInstructions: [
+            {
+              '@type': 'HowToStep',
+              name: 'Preheat',
+              text:
+                'Preheat the oven to 350 degrees F. Grease and flour a 9x9 inch pan.',
+              url: 'https://example.com/party-coffee-cake#step1',
+              image: 'https://example.com/photos/party-coffee-cake/step1.jpg',
+            },
+          ],
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '5',
+            ratingCount: '18',
+          },
+          video: {
+            '@type': 'VideoObject',
+            name: 'How to make a Party Coffee Cake',
+            description: 'This is how you make a Party Coffee Cake.',
+            thumbnailUrl: [
+              'https://example.com/photos/1x1/photo.jpg',
+              'https://example.com/photos/4x3/photo.jpg',
+              'https://example.com/photos/16x9/photo.jpg',
+            ],
+            contentUrl: 'http://www.example.com/video123.mp4',
+            embedUrl: 'http://www.example.com/videoplayer?video=123',
+            uploadDate: '2018-02-05T08:00:00+08:00',
+            duration: 'PT1M33S',
+            interactionStatistic: {
+              '@type': 'InteractionCounter',
+              interactionType: { '@type': 'https://schema.org/WatchAction' },
+              userInteractionCount: 2347,
+            },
+            expires: '2019-02-05T08:00:00+08:00',
+          },
+        };
+
+        expect(jsonLD).to.deep.equal(expectedObject);
+      });
+  });
+
+  it('Sitelinks Search Box', () => {
+    cy.visit('http://localhost:3000/jsonld');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', expectedJSONResults)
+      .then(tags => {
+        const jsonLD = JSON.parse(
+          tags[siteLinksSearchBoxLdJsonIndex].innerHTML,
+        );
+        assertSchema(schemas)('Sitelinks Search Box', '1.0.0')(jsonLD);
+      });
+  });
+
+  it('Sitelinks Search Box Matches', () => {
+    cy.visit('http://localhost:3000/jsonld');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', expectedJSONResults)
+      .then(tags => {
+        const jsonLD = JSON.parse(
+          tags[siteLinksSearchBoxLdJsonIndex].innerHTML,
+        );
+        const expectedObject = {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          url: 'https://example.com',
+          potentialAction: [
+            {
+              '@type': 'SearchAction',
+              target: 'https://query.example.com/search?q={search_term_string}',
+              'query-input': 'required name=search_term_string',
+            },
+            {
+              '@type': 'SearchAction',
+              target:
+                'android-app://com.example/https/query.example.com/search/?q={search_term_string}',
+              'query-input': 'required name=search_term_string',
+            },
+          ],
+        };
+
+        expect(jsonLD).to.deep.equal(expectedObject);
+      });
+  });
+  
+  it('Q&A Page', () => {
+    cy.visit('http://localhost:3000/jsonld');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', expectedJSONResults)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[qaPageLdJsonIndex].innerHTML);
+        assertSchema(schemas)('Q&A Page', '1.0.0')(jsonLD);
+      });
+  });
+
+  it('Q&A Page Matches', () => {
+    cy.visit('http://localhost:3000/jsonld');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', expectedJSONResults)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[qaPageLdJsonIndex].innerHTML);
+        expect(jsonLD).to.deep.equal({
+          '@context': 'https://schema.org',
+          '@type': 'QAPage',
+          mainEntity: {
+            '@type': 'Question',
+            name: 'How many ounces are there in a pound?',
+            text:
+              'I have taken up a new interest in baking and keep running across directions in ounces and pounds. I have to translate between them and was wondering how many ounces are in a pound?',
+            answerCount: 3,
+            upvoteCount: 26,
+            dateCreated: '2016-07-23T21:11Z',
+            author: {
+              '@type': 'Person',
+              name: 'New Baking User',
+            },
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: '1 pound (lb) is equal to 16 ounces (oz).',
+              dateCreated: '2016-11-02T21:11Z',
+              upvoteCount: 1337,
+              url: 'https://example.com/question1#acceptedAnswer',
+              author: {
+                '@type': 'Person',
+                name: 'SomeUser',
+              },
+            },
+            suggestedAnswer: [
+              {
+                '@type': 'Answer',
+                text:
+                  'Are you looking for ounces or fluid ounces? If you are looking for fluid ounces there are 15.34 fluid ounces in a pound of water.',
+                dateCreated: '2016-11-02T21:11Z',
+                upvoteCount: 42,
+                url: 'https://example.com/question1#suggestedAnswer1',
+                author: {
+                  '@type': 'Person',
+                  name: 'AnotherUser',
+                },
+              },
+              {
+                '@type': 'Answer',
+                text:
+                  "I can't remember exactly, but I think 18 ounces in a lb. You might want to double check that.",
+                dateCreated: '2016-11-06T21:11Z',
+                upvoteCount: 0,
+                url: 'https://example.com/question1#suggestedAnswer2',
+                author: {
+                  '@type': 'Person',
+                  name: 'ConfusedUser',
+                },
+              },
+            ],
+          },
+        });
+      });
+  });
+
+  it('Carousel Default Matches', () => {
+    cy.visit('http://localhost:3000/carousel-jsonld/default');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[0].innerHTML);
+        const expectedObject = {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: '1',
+              url: 'http://example.com/peanut-butter-cookies.html',
+            },
+            {
+              '@type': 'ListItem',
+              position: '2',
+              url: 'http://example.com/triple-chocolate-chunk.html',
+            },
+          ],
+        };
+        expect(jsonLD).to.deep.equal(expectedObject);
+      });
+  });
+
+  it('Carousel Course Matches', () => {
+    cy.visit('http://localhost:3000/carousel-jsonld/course');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[0].innerHTML);
+        const expectedObject = {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: '1',
+              item: {
+                '@context': 'https://schema.org',
+                '@type': 'Course',
+                url: 'http://example.com/course-1.html',
+                name: 'Course 1',
+                description: 'Course 1 Description',
+                provider: {
+                  '@type': 'Organization',
+                  name: 'Course Provider',
+                },
+              },
+            },
+            {
+              '@type': 'ListItem',
+              position: '2',
+              item: {
+                '@context': 'https://schema.org',
+                '@type': 'Course',
+                url: 'http://example.com/course-2.html',
+                name: 'Course 2',
+                description: 'Course 2 Description',
+                provider: {
+                  '@type': 'Organization',
+                  name: 'Course Provider',
+                },
+              },
+            },
+          ],
+        };
+
+        expect(jsonLD).to.deep.equal(expectedObject);
+      });
+  });
+
+  it('Carousel Movie Matches', () => {
+    cy.visit('http://localhost:3000/carousel-jsonld/movie');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[0].innerHTML);
+        const expectedObject = {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: '1',
+              item: {
+                '@context': 'https://schema.org',
+                '@type': 'Movie',
+                name: 'Movie 1',
+                url: 'http://example.com/movie-1.html',
+                image:
+                  'https://i.pinimg.com/originals/96/a0/0d/96a00d42b0ff8f80b7cdf2926a211e47.jpg',
+                director: { '@type': 'Person', name: 'John Doe' },
+                review: {
+                  '@type': 'Review',
+                  author: { '@type': 'Person', name: 'Ronan Farrow' },
+                  reviewBody:
+                    'Heartbreaking, inpsiring, moving. Bradley Cooper is a triple threat.',
+                  reviewRating: { '@type': 'Rating', ratingValue: '5' },
+                },
+              },
+            },
+            {
+              '@type': 'ListItem',
+              position: '2',
+              item: {
+                '@context': 'https://schema.org',
+                '@type': 'Movie',
+                name: 'Movie 2',
+                url: 'http://example.com/movie-1.html',
+                image:
+                  'https://i.pinimg.com/originals/96/a0/0d/96a00d42b0ff8f80b7cdf2926a211e47.jpg',
+                director: { '@type': 'Person', name: 'Mary Doe' },
+                review: {
+                  '@type': 'Review',
+                  author: { '@type': 'Person', name: 'Ronan Farrow' },
+                  reviewBody:
+                    'Heartbreaking, inpsiring, moving. Rowan Atkinson is a triple threat.',
+                  reviewRating: { '@type': 'Rating', ratingValue: '5' },
+                },
+              },
+            },
+          ],
+        };
+
+        expect(jsonLD).to.deep.equal(expectedObject);
+      });
+  });
+
+  it('Carousel Recipe Matches', () => {
+    cy.visit('http://localhost:3000/carousel-jsonld/recipe');
+    cy.get('head script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .then(tags => {
+        const jsonLD = JSON.parse(tags[0].innerHTML);
+        const expectedObject = {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: '1',
+              item: {
+                '@context': 'https://schema.org/',
+                '@type': 'Recipe',
+                name: 'Party Coffee Cake',
+                url: 'http://example.com/recipe-1.html',
+                description:
+                  'This coffee cake is awesome and perfect for parties.',
+                datePublished: '2018-03-10',
+                author: { '@type': 'Person', name: 'Mary Stone' },
+                image: [
+                  'https://example.com/photos/1x1/photo.jpg',
+                  'https://example.com/photos/4x3/photo.jpg',
+                  'https://example.com/photos/16x9/photo.jpg',
+                ],
+                prepTime: 'PT20M',
+                cookTime: 'PT30M',
+                totalTime: 'PT50M',
+                keywords: 'cake for a party, coffee',
+                recipeYield: '10',
+                recipeCategory: 'Dessert',
+                recipeCuisine: 'American',
+                nutrition: {
+                  '@type': 'NutritionInformation',
+                  calories: '270 calories',
+                },
+                aggregateRating: {
+                  '@type': 'AggregateRating',
+                  ratingValue: '5',
+                  ratingCount: '18',
+                },
+                video: {
+                  '@type': 'VideoObject',
+                  name: 'How to make a Party Coffee Cake',
+                  thumbnailUrl: [
+                    'https://example.com/photos/1x1/photo.jpg',
+                    'https://example.com/photos/4x3/photo.jpg',
+                    'https://example.com/photos/16x9/photo.jpg',
+                  ],
+                  description: 'This is how you make a Party Coffee Cake.',
+                  contentUrl: 'http://www.example.com/video123.mp4',
+                  uploadDate: '2018-02-05T08:00:00+08:00',
+                  duration: 'PT1M33S',
+                  embedUrl: 'http://www.example.com/videoplayer?video=123',
+                  expires: '2019-02-05T08:00:00+08:00',
+                },
+                recipeIngredient: [
+                  '2 cups of flour',
+                  '3/4 cup white sugar',
+                  '2 teaspoons baking powder',
+                  '1/2 teaspoon salt',
+                  '1/2 cup butter',
+                  '2 eggs',
+                  '3/4 cup milk',
+                ],
+                recipeInstructions: [
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Preheat',
+                    text:
+                      'Preheat the oven to 350 degrees F. Grease and flour a 9x9 inch pan.',
+                    url: 'https://example.com/party-coffee-cake#step1',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step1.jpg',
+                  },
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Mix dry ingredients',
+                    text:
+                      'In a large bowl, combine flour, sugar, baking powder, and salt.',
+                    url: 'https://example.com/party-coffee-cake#step2',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step2.jpg',
+                  },
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Spread into pan',
+                    text: 'Spread into the prepared pan.',
+                    url: 'https://example.com/party-coffee-cake#step4',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step4.jpg',
+                  },
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Bake',
+                    text: 'Bake for 30 to 35 minutes, or until firm.',
+                    url: 'https://example.com/party-coffee-cake#step5',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step5.jpg',
+                  },
+                ],
+              },
+            },
+            {
+              '@type': 'ListItem',
+              position: '2',
+              item: {
+                '@context': 'https://schema.org/',
+                '@type': 'Recipe',
+                name: 'Party Coffee Cake 2',
+                url: 'http://example.com/recipe-2.html',
+                description:
+                  'This coffee cake is awesome and perfect for parties.',
+                datePublished: '2018-03-10',
+                author: { '@type': 'Person', name: 'Mary Stone 2' },
+                image: [
+                  'https://example.com/photos/1x1/photo.jpg',
+                  'https://example.com/photos/4x3/photo.jpg',
+                  'https://example.com/photos/16x9/photo.jpg',
+                ],
+                prepTime: 'PT20M',
+                cookTime: 'PT30M',
+                totalTime: 'PT50M',
+                keywords: 'cake for a party, coffee',
+                recipeYield: '10',
+                recipeCategory: 'Dessert',
+                recipeCuisine: 'American',
+                nutrition: {
+                  '@type': 'NutritionInformation',
+                  calories: '270 calories',
+                },
+                aggregateRating: {
+                  '@type': 'AggregateRating',
+                  ratingValue: '5',
+                  ratingCount: '18',
+                },
+                video: {
+                  '@type': 'VideoObject',
+                  name: 'How to make a Party Coffee Cake',
+                  thumbnailUrl: [
+                    'https://example.com/photos/1x1/photo.jpg',
+                    'https://example.com/photos/4x3/photo.jpg',
+                    'https://example.com/photos/16x9/photo.jpg',
+                  ],
+                  description: 'This is how you make a Party Coffee Cake.',
+                  contentUrl: 'http://www.example.com/video123.mp4',
+                  uploadDate: '2018-02-05T08:00:00+08:00',
+                  duration: 'PT1M33S',
+                  embedUrl: 'http://www.example.com/videoplayer?video=123',
+                  expires: '2019-02-05T08:00:00+08:00',
+                },
+                recipeIngredient: [
+                  '2 cups of flour',
+                  '3/4 cup white sugar',
+                  '2 teaspoons baking powder',
+                  '1/2 teaspoon salt',
+                  '1/2 cup butter',
+                  '2 eggs',
+                  '3/4 cup milk',
+                ],
+                recipeInstructions: [
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Preheat',
+                    text:
+                      'Preheat the oven to 350 degrees F. Grease and flour a 9x9 inch pan.',
+                    url: 'https://example.com/party-coffee-cake#step1',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step1.jpg',
+                  },
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Mix dry ingredients',
+                    text:
+                      'In a large bowl, combine flour, sugar, baking powder, and salt.',
+                    url: 'https://example.com/party-coffee-cake#step2',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step2.jpg',
+                  },
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Spread into pan',
+                    text: 'Spread into the prepared pan.',
+                    url: 'https://example.com/party-coffee-cake#step4',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step4.jpg',
+                  },
+                  {
+                    '@type': 'HowToStep',
+                    name: 'Bake',
+                    text: 'Bake for 30 to 35 minutes, or until firm.',
+                    url: 'https://example.com/party-coffee-cake#step5',
+                    image:
+                      'https://example.com/photos/party-coffee-cake/step5.jpg',
+                  },
+                ],
+              },
+            },
+          ],
+        };
+
+        expect(jsonLD).to.deep.equal(expectedObject);
       });
   });
 });
